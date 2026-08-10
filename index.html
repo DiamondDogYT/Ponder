@@ -150,36 +150,43 @@
     gap:16px;
   }
   .card{
-    background:linear-gradient(180deg, var(--panel-2), var(--panel));
-    border:1px solid #423a2c;
-    border-radius:4px;
+    background-color:#a3812f;
+    background-image:
+      radial-gradient(circle 4.5px at 16px 16px, #3c3115 60%, transparent 64%),
+      radial-gradient(circle 3px at 16px 16px, #f0dfa8 0%, transparent 55%),
+      radial-gradient(circle 4.5px at calc(100% - 16px) 16px, #3c3115 60%, transparent 64%),
+      radial-gradient(circle 3px at calc(100% - 16px) 16px, #f0dfa8 0%, transparent 55%),
+      radial-gradient(circle 4.5px at 16px calc(100% - 16px), #3c3115 60%, transparent 64%),
+      radial-gradient(circle 3px at 16px calc(100% - 16px), #f0dfa8 0%, transparent 55%),
+      radial-gradient(circle 4.5px at calc(100% - 16px) calc(100% - 16px), #3c3115 60%, transparent 64%),
+      radial-gradient(circle 3px at calc(100% - 16px) calc(100% - 16px), #f0dfa8 0%, transparent 55%),
+      repeating-linear-gradient(115deg, rgba(255,255,255,0.09) 0px, rgba(255,255,255,0.09) 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 5px),
+      linear-gradient(160deg, #e2c26c 0%, #c9a84c 32%, #a3812f 68%, #8c7332 100%);
+    border:1px solid #6b5726;
+    border-radius:5px;
     padding:18px;
     display:flex;
     flex-direction:column;
     gap:10px;
     position:relative;
-    box-shadow:0 8px 20px rgba(0,0,0,0.3);
-  }
-  .card::before{
-    content:"";
-    position:absolute;
-    top:0;left:0;right:0;
-    height:3px;
-    background:linear-gradient(90deg, var(--brass), var(--copper));
-    border-radius:4px 4px 0 0;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.35),
+      inset 0 -3px 6px rgba(0,0,0,0.3),
+      0 10px 22px rgba(0,0,0,0.4);
   }
   .card h3{
     margin:0;
     font-family:'Oswald',sans-serif;
     font-size:19px;
     font-weight:600;
-    color:var(--cream);
+    color:#241d0f;
     letter-spacing:0.01em;
+    text-shadow:0 1px 0 rgba(255,255,255,0.3);
   }
   .card p.desc{
     margin:0;
     font-size:13.5px;
-    color:var(--cream-dim);
+    color:#4a3c1f;
     line-height:1.5;
     flex:1;
   }
@@ -188,9 +195,9 @@
     font-family:'JetBrains Mono',monospace;
     font-size:10.5px;
     letter-spacing:0.02em;
-    color:var(--brass);
-    background:rgba(201,168,76,0.1);
-    border:1px solid var(--brass-dim);
+    color:var(--cream);
+    background:rgba(36,29,15,0.32);
+    border:1px solid rgba(36,29,15,0.5);
     border-radius:20px;
     padding:3px 9px;
     text-transform:lowercase;
@@ -200,8 +207,8 @@
     justify-content:space-between;
     font-family:'JetBrains Mono',monospace;
     font-size:11px;
-    color:#8f8570;
-    border-top:1px solid #3a3327;
+    color:#5c4b24;
+    border-top:1px solid rgba(36,29,15,0.35);
     padding-top:10px;
   }
   .card-actions{ margin-top:4px; }
@@ -225,6 +232,13 @@
     transition:transform .12s ease, box-shadow .12s ease;
   }
   .btn:hover{ transform:translateY(-1px); box-shadow:0 6px 14px rgba(0,0,0,0.35); }
+
+  .card .btn{
+    background:linear-gradient(180deg, #2b2620, #181613);
+    color:var(--brass);
+    border:1px solid #3c3115;
+  }
+  .card .btn:hover{ box-shadow:0 6px 14px rgba(0,0,0,0.5); }
 
   .empty-state{
     text-align:center;
@@ -281,8 +295,8 @@
   </div>
 
   <div class="hero">
-    <h1>Share your <span>contraptions</span></h1>
-    <p>Browse .nbt schematics from Create — pistons, gantries, mixers, whatever's been built — and drop them straight into your own world.</p>
+    <h1>Ponder <span>Schematic List</span></h1>
+    <p>A running catalogue of .nbt schematics from Create — pistons, gantries, mixers, and everything in between. Find what you need and drop it straight into your own world.</p>
   </div>
 
   <div class="toolbar">
