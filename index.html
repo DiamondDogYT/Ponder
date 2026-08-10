@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ponder — Create Schematic Exchange</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#181613;
+    --panel:#221f1a;
+    --panel-2:#2b2620;
+    --brass:#c9a84c;
+    --brass-dim:#8c7332;
+    --copper:#b5652c;
+    --cream:#f1ead8;
+    --cream-dim:#c9c0aa;
+    --floor-a:#ffffff;
+    --floor-b:#dfe4de;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Inter',sans-serif;
+    color:var(--cream);
+    min-height:100vh;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* Ponder floor — snow / white concrete checker, straight-on like Create's ponder scenes */
+  .floor-bg{
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background-color:var(--floor-a);
+    background-image:
+      linear-gradient(45deg, var(--floor-b) 25%, transparent 25%, transparent 75%, var(--floor-b) 75%),
+      linear-gradient(45deg, var(--floor-b) 25%, transparent 25%, transparent 75%, var(--floor-b) 75%);
+    background-size: 84px 84px;
+    background-position: 0 0, 42px 42px;
+  }
+  .floor-vignette{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    background:
+      radial-gradient(ellipse at 50% 20%, rgba(24,22,19,0.35) 0%, rgba(24,22,19,0.72) 60%, rgba(24,22,19,0.92) 100%);
+  }
+
+  .wrap{
+    max-width:980px;
+    margin:0 auto;
+    padding:48px 20px 96px;
+  }
+
+  .site-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 26px;
+    background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:1px solid var(--brass-dim);
+    box-shadow:0 10px 30px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04);
+    border-radius:4px;
+  }
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    letter-spacing:0.08em;
+    font-size:26px;
+    color:var(--cream);
+  }
+  .cog{
+    width:28px;height:28px;
+    flex-shrink:0;
+    animation: spin 12s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce){ .cog{animation:none;} }
+  @keyframes spin{ to{ transform:rotate(360deg);} }
+
+  .tagline-mono{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--brass);
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+  }
+
+  .hero{
+    margin-top:54px;
+    text-align:center;
+  }
+  .hero h1{
+    font-family:'Oswald',sans-serif;
+    font-weight:700;
+    font-size:clamp(40px, 7vw, 68px);
+    letter-spacing:0.03em;
+    margin:0 0 10px;
+    color:var(--cream);
+    text-shadow:0 2px 0 rgba(0,0,0,0.5);
+  }
+  .hero h1 span{color:var(--brass);}
+  .hero p{
+    font-size:16px;
+    color:var(--cream-dim);
+    max-width:520px;
+    margin:0 auto 0;
+    line-height:1.55;
+  }
+
+  .toolbar{
+    margin-top:56px;
+    display:flex;
+    gap:12px;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+  }
+  .search{ flex:1; min-width:220px; }
+  .search input{
+    width:100%;
+    padding:12px 14px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    background:var(--panel-2);
+    border:1px solid #423a2c;
+    border-radius:3px;
+    color:var(--cream);
+    outline:none;
+  }
+  .search input:focus{ border-color:var(--brass-dim); }
+  .search input::placeholder{ color:#71695a; }
+
+  .count-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--cream-dim);
+  }
+
+  .grid{
+    margin-top:22px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+    gap:16px;
+  }
+  .card{
+    background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:1px solid #423a2c;
+    border-radius:4px;
+    padding:18px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    position:relative;
+    box-shadow:0 8px 20px rgba(0,0,0,0.3);
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;right:0;
+    height:3px;
+    background:linear-gradient(90deg, var(--brass), var(--copper));
+    border-radius:4px 4px 0 0;
+  }
+  .card h3{
+    margin:0;
+    font-family:'Oswald',sans-serif;
+    font-size:19px;
+    font-weight:600;
+    color:var(--cream);
+    letter-spacing:0.01em;
+  }
+  .card p.desc{
+    margin:0;
+    font-size:13.5px;
+    color:var(--cream-dim);
+    line-height:1.5;
+    flex:1;
+  }
+  .tag-row{ display:flex; flex-wrap:wrap; gap:6px; }
+  .tag-pill{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.02em;
+    color:var(--brass);
+    background:rgba(201,168,76,0.1);
+    border:1px solid var(--brass-dim);
+    border-radius:20px;
+    padding:3px 9px;
+    text-transform:lowercase;
+  }
+  .meta-row{
+    display:flex;
+    justify-content:space-between;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:#8f8570;
+    border-top:1px solid #3a3327;
+    padding-top:10px;
+  }
+  .card-actions{ margin-top:4px; }
+
+  .btn{
+    display:inline-block;
+    width:100%;
+    text-align:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    padding:10px 18px;
+    border-radius:3px;
+    border:1px solid var(--brass-dim);
+    background:linear-gradient(180deg, #d9b75b, var(--brass));
+    color:#241d0f;
+    font-weight:600;
+    cursor:pointer;
+    text-decoration:none;
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover{ transform:translateY(-1px); box-shadow:0 6px 14px rgba(0,0,0,0.35); }
+
+  .empty-state{
+    text-align:center;
+    padding:60px 20px;
+    color:var(--cream-dim);
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    border:1px dashed #4a4130;
+    border-radius:4px;
+    margin-top:22px;
+  }
+  .empty-state strong{
+    display:block;
+    font-family:'Oswald',sans-serif;
+    font-size:18px;
+    color:var(--brass);
+    margin-bottom:8px;
+    font-weight:600;
+  }
+  .empty-state code{
+    background:var(--ink);
+    padding:2px 6px;
+    border-radius:3px;
+    color:var(--brass);
+  }
+
+  footer{
+    text-align:center;
+    margin-top:70px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:#7a715f;
+  }
+
+  ::selection{ background:var(--brass); color:#241d0f; }
+</style>
+</head>
+<body>
+
+<div class="floor-bg"></div>
+<div class="floor-vignette"></div>
+
+<div class="wrap">
+
+  <div class="site-header">
+    <div class="logo">
+      <svg class="cog" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z" stroke="#c9a84c" stroke-width="1.6"/>
+        <path d="M12 2v2.4M12 19.6V22M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2 12h2.4M19.6 12H22M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7" stroke="#c9a84c" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      PONDER
+    </div>
+    <div class="tagline-mono">Create Mod Schematic Exchange</div>
+  </div>
+
+  <div class="hero">
+    <h1>Share your <span>contraptions</span></h1>
+    <p>Browse .nbt schematics from Create — pistons, gantries, mixers, whatever's been built — and drop them straight into your own world.</p>
+  </div>
+
+  <div class="toolbar">
+    <div class="search">
+      <input type="text" id="searchInput" placeholder="Search schematics by name, author, or tag…">
+    </div>
+    <div class="count-label" id="countLabel">Loading…</div>
+  </div>
+
+  <div id="gridArea"></div>
+
+  <footer>PONDER — a fan-made schematic board · not affiliated with the Create mod team</footer>
+</div>
+
+<script>
+  const gridArea = document.getElementById('gridArea');
+  const countLabel = document.getElementById('countLabel');
+  const searchInput = document.getElementById('searchInput');
+
+  let allSchematics = [];
+
+  function escapeHtml(str){
+    return (str || '').replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  function formatSize(bytes){
+    if(!bytes && bytes !== 0) return '';
+    if(bytes < 1024) return bytes + ' B';
+    if(bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+    return (bytes/(1024*1024)).toFixed(2) + ' MB';
+  }
+
+  async function loadManifest(){
+    countLabel.textContent = 'Loading…';
+    try{
+      const res = await fetch('manifest.json', {cache: 'no-store'});
+      if(!res.ok) throw new Error('manifest.json not found (status ' + res.status + ')');
+      const data = await res.json();
+      if(!Array.isArray(data)) throw new Error('manifest.json must be a JSON array');
+      allSchematics = data;
+      renderGrid();
+    }catch(e){
+      allSchematics = [];
+      countLabel.textContent = '';
+      gridArea.innerHTML = `
+        <div class="empty-state">
+          <strong>Couldn't load the schematic list</strong>
+          Make sure <code>manifest.json</code> sits next to <code>index.html</code>, and that this page
+          is being served over HTTP (not opened directly as a local file) — the browser blocks
+          <code>fetch()</code> on <code>file://</code> pages. Try <code>python3 -m http.server</code>
+          in this folder, or host it on GitHub Pages / Netlify.
+          <br><br>Details: ${escapeHtml(e.message)}
+        </div>`;
+    }
+  }
+
+  function renderGrid(){
+    const q = searchInput.value.trim().toLowerCase();
+    const filtered = allSchematics.filter(s => {
+      if(!q) return true;
+      const tagText = (s.tags || []).join(' ').toLowerCase();
+      return (s.name||'').toLowerCase().includes(q)
+        || (s.author||'').toLowerCase().includes(q)
+        || (s.description||'').toLowerCase().includes(q)
+        || tagText.includes(q);
+    });
+
+    countLabel.textContent = filtered.length + (filtered.length === 1 ? ' schematic' : ' schematics');
+
+    if(filtered.length === 0){
+      gridArea.innerHTML = allSchematics.length === 0
+        ? `<div class="empty-state"><strong>Nothing here yet</strong>Add a <code>.nbt</code> file to the <code>schematics</code> folder and an entry to <code>manifest.json</code>.</div>`
+        : `<div class="empty-state"><strong>No matches</strong>Try a different search term.</div>`;
+      return;
+    }
+
+    gridArea.innerHTML = `<div class="grid">${filtered.map(cardHtml).join('')}</div>`;
+  }
+
+  function cardHtml(s){
+    const tags = s.tags || [];
+    const href = 'schematics/' + encodeURIComponent(s.file || '');
+    return `
+      <div class="card">
+        <h3>${escapeHtml(s.name || s.file)}</h3>
+        <p class="desc">${escapeHtml(s.description || 'No description provided.')}</p>
+        ${tags.length ? `<div class="tag-row">${tags.map(t => `<span class="tag-pill">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+        <div class="meta-row">
+          <span>${escapeHtml(s.author || 'unknown')}</span>
+          <span>${escapeHtml(formatSize(s.size))}</span>
+        </div>
+        <div class="card-actions">
+          <a class="btn" href="${href}" download>Download .nbt</a>
+        </div>
+      </div>
+    `;
+  }
+
+  searchInput.addEventListener('input', renderGrid);
+  loadManifest();
+</script>
+
+</body>
+</html>

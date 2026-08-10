@@ -1,0 +1,16 @@
+[
+  {
+    "file": "automatic_andesite_farm.nbt",
+    "name": "Automatic Andesite Farm",
+    "author": "andesite_andy",
+    "description": "Cobblestone into andesite, no manual mixing. Needs a water and lava source nearby.",
+    "tags": ["farm", "andesite", "automatic", "0.5.1"]
+  },
+  {
+    "file": "starter_gearbox.nbt",
+    "name": "Starter Gearbox",
+    "author": "wrenchwitch",
+    "description": "Compact gearbox for splitting rotation to three outputs at different speeds.",
+    "tags": ["gearbox", "rotation", "utility"]
+  }
+]
